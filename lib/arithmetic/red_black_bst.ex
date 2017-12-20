@@ -39,7 +39,7 @@ defmodule Arithmetic.RedBlackBST.Node do
       nil
     else
       node =
-        if ! is_red(node.left) && ! is_red(node.left.left) do
+        if not is_red(node.left) and not is_nil(node.left) and not is_red(node.left.left) do
           move_red_left(node)
         else
           node
@@ -58,7 +58,7 @@ defmodule Arithmetic.RedBlackBST.Node do
       nil
     else
       node =
-        if ! is_red(node.right) && ! is_red(node.right.left) do
+        if not is_red(node.right) and not is_nil(node.right) and not is_red(node.right.left) do
           move_red_right(node)
         else
           node
@@ -73,7 +73,7 @@ defmodule Arithmetic.RedBlackBST.Node do
   def delete(%Node{} = node, key) do
     if key < node.key do
       node =
-        if ! is_red(node.left) && not is_nil(node.left) && ! is_red(node.left.left) do
+        if not is_red(node.left) and not is_nil(node.left) and not is_red(node.left.left) do
           move_red_left(node)
         else
           node
@@ -88,11 +88,11 @@ defmodule Arithmetic.RedBlackBST.Node do
           node
         end
 
-      if key == node.key && is_nil(node.right) do
+      if key == node.key and is_nil(node.right) do
         nil
       else
         node =
-          if ! is_red(node.right) && not is_nil(node.right) && ! is_red(node.right.left) do
+          if not is_red(node.right) and not is_nil(node.right) and not is_red(node.right.left) do
             move_red_right(node)
           else
             node
@@ -157,14 +157,14 @@ defmodule Arithmetic.RedBlackBST.Node do
   defp balance(nil), do: nil
   defp balance(%Node{} = node) do
     node = 
-      if ! is_red(node.left) and is_red(node.right) do
+      if not is_red(node.left) and is_red(node.right) do
         rotate_left(node)
       else
         node
       end
     
     node =
-      if is_red(node.left) and is_red(node.left.left) do
+      if is_red(node.left) and not is_nil(node.left) and is_red(node.left.left) do
         rotate_right(node)
       else
         node
@@ -183,8 +183,9 @@ defmodule Arithmetic.RedBlackBST.Node do
   defp move_red_left(%Node{} = node) do
     node = flip_colors(node)
 
-    if is_red(node.right) && is_red(node.right.left) do
-      %{node | right: rotate_right(node.right)} |> rotate_left()
+    if is_red(node.right) and not is_nil(node.right) and is_red(node.right.left) do
+      node = %{node | right: rotate_right(node.right)} 
+      rotate_left(node)
     else
       node
     end
@@ -193,7 +194,7 @@ defmodule Arithmetic.RedBlackBST.Node do
   defp move_red_right(%Node{} = node) do
     node = flip_colors(node)
 
-    if is_red(node.left) && is_red(node.left.left) do
+    if is_red(node.left) and not is_nil(node.left) and is_red(node.left.left) do
       rotate_right(node)
     else
       node
