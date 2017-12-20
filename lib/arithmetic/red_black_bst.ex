@@ -217,11 +217,56 @@ defmodule Arithmetic.RedBlackBST do
     %{tree | root: %{tree.root | color: :black}}
   end
 
-  def delete_min(%RedBlackBST{} = tree), do: %{tree | root: Node.delete_min(tree.root)}
+  def delete_min(%RedBlackBST{} = tree) do 
+    tree =
+      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
+        %{tree | root: %{tree.root | color: :red}}
+      else
+        tree
+      end
 
-  def delete_max(%RedBlackBST{} = tree), do: %{tree | root: Node.delete_max(tree.root)}
+    tree = %{tree | root: Node.delete_min(tree.root)}
 
-  def delete(%RedBlackBST{} = tree, key), do: %{tree | root: Node.delete(tree.root, key)}
+    if Node.size(tree.root) > 0 do
+      %{tree | root: %{tree.root | color: :black}}
+    else
+      tree
+    end
+  end
+
+  def delete_max(%RedBlackBST{} = tree) do
+    tree =
+      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
+        %{tree | root: %{tree.root | color: :red}}
+      else
+        tree
+      end
+
+    tree = %{tree | root: Node.delete_max(tree.root)}
+
+    if Node.size(tree.root) > 0 do
+      %{tree | root: %{tree.root | color: :black}}
+    else
+      tree
+    end
+  end
+
+  def delete(%RedBlackBST{} = tree, key) do
+    tree =
+      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
+        %{tree | root: %{tree.root | color: :red}}
+      else
+        tree
+      end
+
+    tree = %{tree | root: Node.delete(tree.root, key)}
+
+    if Node.size(tree.root) > 0 do
+      %{tree | root: %{tree.root | color: :black}}
+    else
+      tree
+    end
+  end
 
   def min(%RedBlackBST{} = tree), do: Node.min(tree.root)
   
