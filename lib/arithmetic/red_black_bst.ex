@@ -123,9 +123,6 @@ defmodule Arithmetic.RedBlackBST.Node do
   def size(nil), do: 0
   def size(%Node{n: n}), do: n
 
-  def update_size(nil), do: nil
-  def update_size(%Node{} = node), do: %{node | n: size(node.left) + size(node.right) + 1}
-
   def min(nil), do: nil
   def min(%Node{left: nil} = node), do: node
   def min(%Node{} = node), do: min(node.left)
@@ -134,28 +131,31 @@ defmodule Arithmetic.RedBlackBST.Node do
   def max(%Node{right: nil} = node), do: node
   def max(%Node{} = node), do: max(node.right)
 
-  def rotate_left(%Node{right: x} = h) do
+  defp update_size(nil), do: nil
+  defp update_size(%Node{} = node), do: %{node | n: size(node.left) + size(node.right) + 1}
+
+  defp rotate_left(%Node{right: x} = h) do
     x = %{x | color: h.color, n: h.n}
     h = %{h | color: :red, right: x.left} |> update_size()
     %{x | left: h}
   end
 
-  def rotate_right(%Node{left: x} = h) do
+  defp rotate_right(%Node{left: x} = h) do
     x = %{x | color: h.color, n: h.n}
     h = %{h | color: :red, left: x.right} |> update_size()
     %{x | right: h}
   end
 
-  def exchange_color(nil), do: nil
-  def exchange_color(%Node{color: :red} = node), do: %{node | color: :black}
-  def exchange_color(%Node{color: :black} = node), do: %{node | color: :red}
+  defp exchange_color(nil), do: nil
+  defp exchange_color(%Node{color: :red} = node), do: %{node | color: :black}
+  defp exchange_color(%Node{color: :black} = node), do: %{node | color: :red}
 
-  def flip_colors(%Node{left: left, right: right} = node) do
+  defp flip_colors(%Node{left: left, right: right} = node) do
     %{exchange_color(node) | left: exchange_color(left), right: exchange_color(right)}
   end
 
-  def balance(nil), do: nil
-  def balance(%Node{} = node) do
+  defp balance(nil), do: nil
+  defp balance(%Node{} = node) do
     node = 
       if ! is_red(node.left) and is_red(node.right) do
         rotate_left(node)
@@ -180,7 +180,7 @@ defmodule Arithmetic.RedBlackBST.Node do
     update_size(node)
   end
 
-  def move_red_left(%Node{} = node) do
+  defp move_red_left(%Node{} = node) do
     node = flip_colors(node)
 
     if is_red(node.right) && is_red(node.right.left) do
@@ -190,7 +190,7 @@ defmodule Arithmetic.RedBlackBST.Node do
     end
   end
 
-  def move_red_right(%Node{} = node) do
+  defp move_red_right(%Node{} = node) do
     node = flip_colors(node)
 
     if is_red(node.left) && is_red(node.left.left) do
@@ -218,54 +218,21 @@ defmodule Arithmetic.RedBlackBST do
   end
 
   def delete_min(%RedBlackBST{} = tree) do 
-    tree =
-      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
-        %{tree | root: %{tree.root | color: :red}}
-      else
-        tree
-      end
-
+    tree = change_root_to_red(tree)
     tree = %{tree | root: Node.delete_min(tree.root)}
-
-    if Node.size(tree.root) > 0 do
-      %{tree | root: %{tree.root | color: :black}}
-    else
-      tree
-    end
+    change_root_to_black(tree)
   end
 
   def delete_max(%RedBlackBST{} = tree) do
-    tree =
-      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
-        %{tree | root: %{tree.root | color: :red}}
-      else
-        tree
-      end
-
+    tree = change_root_to_red(tree)
     tree = %{tree | root: Node.delete_max(tree.root)}
-
-    if Node.size(tree.root) > 0 do
-      %{tree | root: %{tree.root | color: :black}}
-    else
-      tree
-    end
+    change_root_to_black(tree)
   end
 
   def delete(%RedBlackBST{} = tree, key) do
-    tree =
-      if not is_nil(tree.root) && not Node.is_red(tree.root.left) && not Node.is_red(tree.root.right) do
-        %{tree | root: %{tree.root | color: :red}}
-      else
-        tree
-      end
-
+    tree = change_root_to_red(tree)
     tree = %{tree | root: Node.delete(tree.root, key)}
-
-    if Node.size(tree.root) > 0 do
-      %{tree | root: %{tree.root | color: :black}}
-    else
-      tree
-    end
+    change_root_to_black(tree)
   end
 
   def min(%RedBlackBST{} = tree), do: Node.min(tree.root)
@@ -273,4 +240,18 @@ defmodule Arithmetic.RedBlackBST do
   def max(%RedBlackBST{} = tree), do: Node.max(tree.root)
 
   def size(%RedBlackBST{} = tree), do: Node.size(tree.root)
+
+  defp change_root_to_red(%RedBlackBST{root: nil} = tree), do: tree
+  defp change_root_to_red(%RedBlackBST{root: %Node{} = root} = tree) do
+    if not Node.is_red(root.left) && not Node.is_red(root.right) do
+      %{tree | root: %{root | color: :red}}
+    else
+      tree
+    end
+  end
+
+  defp change_root_to_black(%RedBlackBST{root: nil} = tree), do: tree
+  defp change_root_to_black(%RedBlackBST{root: %Node{} = root} = tree) do
+    %{tree | root: %{root | color: :black}}
+  end
 end
