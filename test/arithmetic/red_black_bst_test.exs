@@ -68,4 +68,20 @@ defmodule Arithmetic.RedBlackBSTTest do
     node = RedBlackBST.get(tree, "E")
     assert is_nil(node)
   end
+
+  test "preorder", %{tree: tree} do
+    assert RedBlackBST.preorder(tree) == ["M", "E", "C", "A", "H", "S", "R", "X"]
+  end
+
+  test "inorder", %{tree: tree} do
+    assert RedBlackBST.inorder(tree) == ["A", "C", "E", "H", "M", "R", "S", "X"]
+  end
+
+  test "postorder", %{tree: tree} do
+    assert RedBlackBST.postorder(tree) == ["A", "C", "H", "E", "R", "X", "S", "M"]
+  end
+
+  test "levelorder", %{tree: tree} do
+    assert RedBlackBST.levelorder(tree) == ["M", "E", "S", "C", "H", "R", "X", "A"]
+  end
 end

@@ -200,6 +200,60 @@ defmodule Arithmetic.RedBlackBST.Node do
       node
     end
   end
+
+  @doc """
+    前序遍历
+  """
+  def preorder(nil), do: []
+  def preorder(%Node{} = node), do: preorder([], node)
+
+  defp preorder(result, nil), do: result
+  defp preorder(result, %Node{} = node) do
+    result
+    |> Enum.concat([node.key])
+    |> preorder(node.left)
+    |> preorder(node.right)
+  end
+
+  @doc """
+    中序遍历
+  """
+  def inorder(nil), do: []
+  def inorder(%Node{} = node), do: inorder([], node)
+
+  defp inorder(result, nil), do: result
+  defp inorder(result, %Node{} = node) do
+    result
+    |> inorder(node.left)
+    |> Enum.concat([node.key])
+    |> inorder(node.right)
+  end
+
+  @doc """
+    后序遍历
+  """
+  def postorder(nil), do: []
+  def postorder(%Node{} = node), do: postorder([], node)
+
+  defp postorder(result, nil), do: result
+  defp postorder(result, %Node{} = node) do
+    result
+    |> postorder(node.left)
+    |> postorder(node.right)
+    |> Enum.concat([node.key])
+  end
+
+  @doc """
+    层级遍历
+  """
+  def levelorder(nil), do: []
+  def levelorder(%Node{} = node), do: levelorder([], [node])
+  
+  defp levelorder(result, []), do: result
+  defp levelorder(result, [nil | queue]), do: levelorder(result, queue)
+  defp levelorder(result, [%Node{} = node | queue]) do 
+    levelorder(result ++ [node.key], queue ++ [node.left, node.right])
+  end
 end
 
 
@@ -241,6 +295,14 @@ defmodule Arithmetic.RedBlackBST do
   def max(%RedBlackBST{} = tree), do: Node.max(tree.root)
 
   def size(%RedBlackBST{} = tree), do: Node.size(tree.root)
+
+  def preorder(%RedBlackBST{} = tree), do: Node.preorder(tree.root)
+
+  def inorder(%RedBlackBST{} = tree), do: Node.inorder(tree.root)
+
+  def postorder(%RedBlackBST{} = tree), do: Node.postorder(tree.root)
+
+  def levelorder(%RedBlackBST{} = tree), do: Node.levelorder(tree.root)
 
   defp change_root_to_red(%RedBlackBST{root: nil} = tree), do: tree
   defp change_root_to_red(%RedBlackBST{root: %Node{} = root} = tree) do
