@@ -254,6 +254,32 @@ defmodule Arithmetic.RedBlackBST.Node do
   defp levelorder(result, [%Node{} = node | queue]) do 
     levelorder(result ++ [node.key], queue ++ [node.left, node.right])
   end
+
+  @doc """
+    查找第 k 个元素
+  """
+  def select(nil, _k), do: {:error, nil}
+  def select(%Node{} = node, k) do
+    t = size(node.left)
+
+    cond do
+      t < k -> select(node.right, k - t - 1)
+      t > k -> select(node.left, k)
+      true -> {:ok, node}
+    end
+  end
+
+  @doc """
+    检查元素的排名
+  """
+  def rank(nil, _key), do: {:error, nil}
+  def rank(%Node{} = node, key) do
+    cond do
+      key < node.key -> rank(node.left, key)
+      key > node.key -> rank(node.right, key)
+      true -> {:ok, size(node.left)}
+    end
+  end
 end
 
 
@@ -303,6 +329,10 @@ defmodule Arithmetic.RedBlackBST do
   def postorder(%RedBlackBST{} = tree), do: Node.postorder(tree.root)
 
   def levelorder(%RedBlackBST{} = tree), do: Node.levelorder(tree.root)
+
+  def select(%RedBlackBST{} = tree, k), do: Node.select(tree.root, k)
+
+  def rank(%RedBlackBST{} = tree, key), do: Node.rank(tree.root, key)
 
   defp change_root_to_red(%RedBlackBST{root: nil} = tree), do: tree
   defp change_root_to_red(%RedBlackBST{root: %Node{} = root} = tree) do

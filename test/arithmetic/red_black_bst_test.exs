@@ -84,4 +84,18 @@ defmodule Arithmetic.RedBlackBSTTest do
   test "levelorder", %{tree: tree} do
     assert RedBlackBST.levelorder(tree) == ["M", "E", "S", "C", "H", "R", "X", "A"]
   end
+
+  test "select", %{tree: tree} do
+    assert {:ok, node} = RedBlackBST.select(tree, 0)
+    assert node.key == "A"
+    assert {:ok, node} = RedBlackBST.select(tree, 4)
+    assert node.key == "M"
+    assert {:error, _} = RedBlackBST.select(tree, 99)
+  end
+
+  test "rank", %{tree: tree} do
+    assert {:ok, 0} = RedBlackBST.rank(tree, "A")
+    assert {:ok, 4} = RedBlackBST.rank(tree, "M")
+    assert {:error, _} = RedBlackBST.rank(tree, "Z")
+  end
 end
