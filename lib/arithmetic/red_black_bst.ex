@@ -322,26 +322,30 @@ defmodule Arithmetic.RedBlackBST do
   def get(%RedBlackBST{} = tree, key), do: Node.get(tree.root, key)
 
   def put(%RedBlackBST{} = tree, key, val) do
-    tree = %{tree | root: Node.put(tree.root, key, val)}
-    %{tree | root: %{tree.root | color: :black}}
+    tree
+    |> Map.update!(:root, &Node.put(&1, key, val))
+    |> change_root_to_black()
   end
 
   def delete_min(%RedBlackBST{} = tree) do 
-    tree = change_root_to_red(tree)
-    tree = %{tree | root: Node.delete_min(tree.root)}
-    change_root_to_black(tree)
+    tree
+    |> change_root_to_red()
+    |> Map.update!(:root, &Node.delete_min(&1))
+    |> change_root_to_black()
   end
 
   def delete_max(%RedBlackBST{} = tree) do
-    tree = change_root_to_red(tree)
-    tree = %{tree | root: Node.delete_max(tree.root)}
-    change_root_to_black(tree)
+    tree
+    |> change_root_to_red()
+    |> Map.update!(:root, &Node.delete_max(&1))
+    |> change_root_to_black()
   end
 
   def delete(%RedBlackBST{} = tree, key) do
-    tree = change_root_to_red(tree)
-    tree = %{tree | root: Node.delete(tree.root, key)}
-    change_root_to_black(tree)
+    tree
+    |> change_root_to_red()
+    |> Map.update!(:root, &Node.delete(&1, key))
+    |> change_root_to_black()
   end
 
   def min(%RedBlackBST{} = tree), do: Node.min(tree.root)
