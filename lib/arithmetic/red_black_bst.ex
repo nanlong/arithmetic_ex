@@ -39,7 +39,7 @@ defmodule Arithmetic.RedBlackBST.Node do
       nil
     else
       node =
-        if not is_red(node.left) and not is_nil(node.left) and not is_red(node.left.left) do
+        if not is_nil(node.left) and not is_red(node.left.left) do
           move_red_left(node)
         else
           node
@@ -58,7 +58,7 @@ defmodule Arithmetic.RedBlackBST.Node do
       nil
     else
       node =
-        if not is_red(node.right) and not is_nil(node.right) and not is_red(node.right.left) do
+        if not is_nil(node.right) and not is_red(node.right.left) do
           move_red_right(node)
         else
           node
@@ -73,7 +73,7 @@ defmodule Arithmetic.RedBlackBST.Node do
   def delete(%Node{} = node, key) do
     if key < node.key do
       node =
-        if not is_red(node.left) and not is_nil(node.left) and not is_red(node.left.left) do
+        if not is_nil(node.left) and not is_red(node.left.left) do
           move_red_left(node)
         else
           node
@@ -92,7 +92,7 @@ defmodule Arithmetic.RedBlackBST.Node do
         nil
       else
         node =
-          if not is_red(node.right) and not is_nil(node.right) and not is_red(node.right.left) do
+          if not is_nil(node.right) and not is_red(node.right.left) do
             move_red_right(node)
           else
             node
