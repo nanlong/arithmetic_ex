@@ -280,6 +280,34 @@ defmodule Arithmetic.RedBlackBST.Node do
       true -> {:ok, size(node.left)}
     end
   end
+
+  @doc """
+    向下取整
+  """
+  def floor(nil, _key), do: nil
+  def floor(%Node{} = node, key) do
+    cond do
+      key < node.key -> floor(node.left, key)
+      key > node.key ->
+        other = floor(node.right, key)
+        if is_nil(other), do: node, else: other
+      true -> node
+    end
+  end
+
+  @doc """
+    向上取整
+  """
+  def ceiling(nil, _key), do: nil
+  def ceiling(%Node{} = node, key) do
+    cond do
+      key < node.key -> 
+        other = ceiling(node.left, key)
+        if is_nil(other), do: node, else: other
+      key > node.key -> ceiling(node.right, key)
+      true -> node
+    end
+  end
 end
 
 
@@ -333,6 +361,10 @@ defmodule Arithmetic.RedBlackBST do
   def select(%RedBlackBST{} = tree, k), do: Node.select(tree.root, k)
 
   def rank(%RedBlackBST{} = tree, key), do: Node.rank(tree.root, key)
+
+  def floor(%RedBlackBST{} = tree, key), do: Node.floor(tree.root, key)
+
+  def ceiling(%RedBlackBST{} = tree, key), do: Node.ceiling(tree.root, key)
 
   defp change_root_to_red(%RedBlackBST{root: nil} = tree), do: tree
   defp change_root_to_red(%RedBlackBST{root: %Node{} = root} = tree) do

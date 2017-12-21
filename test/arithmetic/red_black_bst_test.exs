@@ -98,4 +98,14 @@ defmodule Arithmetic.RedBlackBSTTest do
     assert {:ok, 4} = RedBlackBST.rank(tree, "M")
     assert {:error, _} = RedBlackBST.rank(tree, "Z")
   end
+
+  test "floor", %{tree: tree} do
+    node = RedBlackBST.floor(tree, "G")
+    assert node.key == "E"
+  end
+
+  test "ceiling", %{tree: tree} do
+    node = RedBlackBST.ceiling(tree, "G")
+    assert node.key == "H"
+  end
 end
